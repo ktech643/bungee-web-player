@@ -121,9 +121,9 @@ function onEnded() {
 
 function skip(seconds) {
   if (!shifter || duration === 0) return;
-  const cur = (shifter.percentagePlayed / 100) * duration;
+  const cur = (shifter.percentagePlayed / 100) * duration;   // getter is 0–100
   const pct = Math.max(0, Math.min(100, ((cur + seconds) / duration) * 100));
-  shifter.percentagePlayed = pct;
+  shifter.percentagePlayed = pct / 100;   // setter expects a 0–1 fraction
   seekEl.value = pct;
   curEl.textContent = fmt((pct / 100) * duration);
 }
@@ -157,7 +157,7 @@ seekEl.addEventListener('input', () => {
   curEl.textContent = fmt((seekEl.value / 100) * duration);
 });
 seekEl.addEventListener('change', () => {
-  if (shifter) shifter.percentagePlayed = parseFloat(seekEl.value);
+  if (shifter) shifter.percentagePlayed = parseFloat(seekEl.value) / 100;   // setter expects 0–1
   seeking = false;
 });
 
