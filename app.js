@@ -203,27 +203,21 @@ $('url').onclick = async () => {
   }
 };
 
-// Synthesised melody so the demo is instantly playable with no file.
-$('demo').onclick = () => {
-  const sr = ctx.sampleRate, len = sr * 6;
-  const buf = ctx.createBuffer(2, len, sr);
-  const notes = [261.63, 329.63, 392.0, 523.25]; // C E G C
-  for (let ch = 0; ch < 2; ch++) {
-    const d = buf.getChannelData(ch);
-    for (let i = 0; i < len; i++) {
-      const t = i / sr;
-      const note = notes[Math.floor(t) % notes.length];
-      const env = Math.sin(Math.PI * (t % 1));        // soft per-second envelope
-      d[i] = 0.25 * env * Math.sin(2 * Math.PI * note * t);
-    }
+// Bundled demo track (assets/demo.mp3) so the player is instantly usable.
+$('demo').onclick = async () => {
+  try {
+    const res = await fetch('./assets/demo.mp3');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    decodeAndLoad(await res.arrayBuffer(), 'Demo Track');
+  } catch (e) {
+    notify("Couldn't load the demo track.");
   }
-  loadBuffer(buf, 'Demo Tone (synth)');
 };
 
 // Apple Music: not possible on the web — DRM library tracks can't be decoded
 // into PCM for processing (MusicKit JS only plays through Apple's own player).
 $('apple').onclick = () =>
-  notify("Apple Music can't be time-stretched on the web (DRM). Use a file, URL, or the demo tone.");
+  notify("Apple Music can't be time-stretched on the web (DRM). Use a file, URL, or the demo track.");
 
 // init
 setControlsEnabled(false);
