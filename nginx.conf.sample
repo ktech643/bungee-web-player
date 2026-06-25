@@ -1,0 +1,27 @@
+# Sample nginx server block for deploying the Bungee web player.
+# Copy the project files to /var/www/web-player, then drop this in
+# /etc/nginx/sites-available/ (adjust server_name / paths), enable, reload.
+
+server {
+    listen 80;
+    server_name your-domain.example;          # or an IP for quick testing
+
+    root /var/www/web-player;
+    index index.html;
+
+    # ES modules must be served with a JS MIME type (nginx default does this).
+    types {
+        text/html       html;
+        text/javascript js;
+        application/json json;
+    }
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # The app is fully static — long-cache the vendored engine.
+    location /vendor/ {
+        add_header Cache-Control "public, max-age=31536000, immutable";
+    }
+}

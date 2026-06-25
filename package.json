@@ -1,0 +1,10 @@
+{
+  "name": "bungee-web-player",
+  "version": "1.0.0",
+  "description": "Bungee web time-stretch player — standalone static site (independent of the iOS app).",
+  "private": true,
+  "scripts": {
+    "start": "npx --yes serve -l 8077 .",
+    "dev": "python3 -m http.server 8077"
+  }
+}
